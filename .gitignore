@@ -1,0 +1,4 @@
+build/
+devel/
+.catkin_workspace
+src/kinect_ros/src/debug/

@@ -1,0 +1,12 @@
+[config]
+cb_d = "cb"
+rectified_d = "rectified_cb"
+out_f = "stereo_calib.yaml"
+cb_size = [7, 10]
+square_size = 45
+is_fisheye = false
+alpha = 0
+ocv_det_cb = false
+is_concat = false
+is_vert = true
+
