@@ -6,6 +6,8 @@
 #include <opencv2/opencv.hpp>
 #include "MvCameraControl.h"
 #include "ros/ros.h"
+#include <map>
+
 
 using namespace std;
 
@@ -69,25 +71,30 @@ namespace camera
         {
             cout << "MV_CC_EnumDevices fail" << endl;
         }
+        map<string,int> names_map;
+
 
         for (int i = 0; i < stDeviceList.nDeviceNum; i++)
         {
-	        for (int j = 0; j < stDeviceList.nDeviceNum-i-1; j++)
-	        {
-	        //USB相机，SpecialInfo.stGigEInfo就需要变成SpecialInfo.stUSBInfo，换成其他设备信息来排序
-		        if(stDeviceList.pDeviceInfo[j]->SpecialInfo.stGigEInfo.chUserDefinedName < stDeviceList.pDeviceInfo[j+1]->SpecialInfo.stGigEInfo.chUserDefinedName)
-		        {
-			        MV_CC_DEVICE_INFO* temp = stDeviceList.pDeviceInfo[j];
-			        stDeviceList.pDeviceInfo[j] = stDeviceList.pDeviceInfo[j+1];
-			        stDeviceList.pDeviceInfo[j+1]=temp;
-		        }
-	        }
+            string camera_name = reinterpret_cast<const char *>(stDeviceList.pDeviceInfo[i]->SpecialInfo.stGigEInfo.chUserDefinedName);
+	        // for (int j = 0; j < stDeviceList.nDeviceNum-i-1; j++)
+	        // {
+	        // //USB相机，SpecialInfo.stGigEInfo就需要变成SpecialInfo.stUSBInfo，换成其他设备信息来排序
+		    //     if(stDeviceList.pDeviceInfo[j]->SpecialInfo.stGigEInfo.chUserDefinedName < stDeviceList.pDeviceInfo[j+1]->SpecialInfo.stGigEInfo.chUserDefinedName)
+		    //     {
+			//         MV_CC_DEVICE_INFO* temp = stDeviceList.pDeviceInfo[j];
+			//         stDeviceList.pDeviceInfo[j] = stDeviceList.pDeviceInfo[j+1];
+			//         stDeviceList.pDeviceInfo[j+1]=temp;
+		    //     }
+	        // }
+            names_map[camera_name] = i; 
+            
         }
         
         cout << "input idx default: 1" << endl;
-        int idx = 1;
+        string idx = "";
         cin >> idx;
-        nRet = MV_CC_CreateHandle(&handle, stDeviceList.pDeviceInfo[idx-1]);
+        nRet = MV_CC_CreateHandle(&handle, stDeviceList.pDeviceInfo[names_map.find(idx)->second]);
         if (MV_OK != nRet)
         {
             cout << "create handel failed" << endl;

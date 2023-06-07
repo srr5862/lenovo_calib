@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="pub_img_width" default="720" />
-  <arg name="pub_img_height" default="1280" />
+  <arg name="pub_img_width" default="5120" />
+  <arg name="pub_img_height" default="5120" />
   <arg name="ori_img_width" default="5120" />
   <arg name="ori_img_height" default="5120" />
   <arg name="FrameRate" default="80" />

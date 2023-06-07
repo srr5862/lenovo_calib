@@ -33,12 +33,14 @@ def now():
 
 time_stamp = now()
 
-def write_infomation(kinect_image):
+def write_infomation(kinect_image,hik_image):
     
+    this_time = now()
     os.makedirs(osp.join(data_path,time_stamp),exist_ok=True)
     
-    cv2.imwrite(f"{osp.join(data_path,time_stamp)}/{now()}_.jpg",kinect_image)
-    cv2.imwrite(f"{osp.join(data_path,time_stamp)}/{now()}_.bmp",hik_image)
+    cv2.imwrite(f"{osp.join(data_path,time_stamp)}/{this_time}_.jpg",kinect_image)
+    cv2.imwrite(f"{osp.join(data_path,time_stamp)}/{this_time}_.bmp",hik_image)
+    print("success")
     
 #    time.sleep(0.5)
 
@@ -51,9 +53,19 @@ def write_json(info,info_name):
 def image_process(kin_image_msg,hik_image_msg):
     kinect_image = cv_bridge.imgmsg_to_cv2(kin_image_msg,desired_encoding="bgr8")
     hik_image = cv_bridge.imgmsg_to_cv2(hik_image_msg,desired_encoding="bgr8")
+    
+    kinect_image_rotate = cv2.rotate(kinect_image,cv2.ROTATE_90_CLOCKWISE)
 
-    write_infomation(kinect_image,hik_image)
-    print("success")
+    key = cv2.waitKey(1)
+    
+    cv2.namedWindow("hik",0)
+    cv2.imshow("hik",hik_image)
+    
+    if key == ord('s'):
+        write_infomation(kinect_image_rotate,hik_image)
+    elif key == ord('q'):
+        rospy.signal_shutdown("exit")
+        
     
 
 def sub():
